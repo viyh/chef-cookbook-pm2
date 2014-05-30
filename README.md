@@ -75,11 +75,12 @@ This LWRP provides a simple way to deploy multiple applications with pm2. Usage 
 
 ```
 pm2_app 'my_app_1' do
-    path '/var/www/my_app_1'
-    user 'nobody'
-    group 'nobody'
-    port '8080'
-    action :create
+    path    '/var/www/my_app_1'
+    js      'main.js'
+    user    'nobody'
+    group   'nobody'
+    port    '8080'
+    action  :create
 end
 ```
 
