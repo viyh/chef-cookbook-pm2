@@ -30,12 +30,6 @@ Attributes
     <td><tt>8080</tt></td>
   </tr>
   <tr>
-    <td><tt>['pm2']['mount_point']</tt></td>
-    <td>String</td>
-    <td>URL Prefix for the node app</td>
-    <td><tt>/</tt></td>
-  </tr>
-  <tr>
     <td><tt>['pm2']['path']</tt></td>
     <td>String</td>
     <td>Path to the root of the node app</td>
