@@ -17,42 +17,45 @@ def load_current_resource
     run_context.include_recipe 'pm2::pm2'
 
     if ::File.exists?("#{new_resource.path}/server-start.sh")
-        c = shell_out('pm2 list')
+        c = cli_run('pm2 list')
         @current_resource.exists = c.stdout.include?(new_resource.name)
     end
 end
 
+def cli_run(command)
+    shell = Mixlib::ShellOut.new("#{command} 2>&1")
+    shell.run_command
+end
+
 action :create do
-    converge_by("Create start script for #{new_resource.name}") do
-        t = template "#{new_resource.path}/server-start.sh" do
-            owner new_resource.user
-            group new_resource.group
-            variables ({
-                :name   => new_resource.name,
-                :path   => new_resource.path,
-                :js     => new_resource.js,
-                :port   => new_resource.port,
-                :user   => new_resource.user,
-                :group  => new_resource.group
-            })
-            mode 00755
-            source 'server-start.sh.erb'
-        end
+    t = template "#{new_resource.path}/server-start.sh" do
+        owner new_resource.user
+        group new_resource.group
+        variables ({
+            :name   => new_resource.name,
+            :path   => new_resource.path,
+            :js     => new_resource.js,
+            :port   => new_resource.port,
+            :user   => new_resource.user,
+            :group  => new_resource.group
+        })
+        mode 00755
+        source 'server-start.sh.erb'
+        notifies :run, "execute[run #{new_resource.name}]", :delayed
     end
 
-    converge_by("Starting app: #{new_resource.name}") do
-        server_start = execute "run #{new_resource.name}" do
-            command './server-start.sh'
-            cwd new_resource.path
-            user new_resource.user
-            group new_resource.group
-            action :nothing
-        end
+    server_start = execute "run #{new_resource.name}" do
+        command './server-start.sh'
+        cwd new_resource.path
+        user new_resource.user
+        group new_resource.group
+        only_if { ::File.exists?("#{new_resource.path}/server-start.sh") }
+        action :nothing
+    end
 
-        if not @current_resource.exists or t.updated_by_last_action?
-            server_start.run_action(:run)
-            new_resource.updated_by_last_action(true)
-        end
+    if not @current_resource.exists or t.updated_by_last_action?
+        server_start.run_action(:run)
+        new_resource.updated_by_last_action(true)
     end
 end
 
