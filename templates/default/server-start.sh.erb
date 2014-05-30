@@ -1,0 +1,16 @@
+#!/bin/bash
+
+cd <%= @path %>
+
+npm install
+
+pm2 delete <%= @name %>
+PORT=<%= @port %> pm2 start <%= @js %> \
+    -n <%= @name %> \
+    -e ../logs/err-nodejs.log \
+    -o ../logs/output-nodejs.log \
+    -p ../logs/pid-nodejs.pid \
+    --run-as-user <%= @user %> \
+    --run-as-group <%= @group %> \
+    -i max
+
