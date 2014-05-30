@@ -1,6 +1,6 @@
 pm2 Cookbook
 ======================
-This cookbook provides recipes to install and setup node.js, PM2 and provides an LWRP for easy setup of node apps managed by PM2.
+This cookbook provides recipes to install and setup [node.js](http://nodejs.org/), [pm2](https://github.com/unitech/pm2) and provides an LWRP for easy setup of node apps managed by pm2.
 
 Requirements
 ------------
