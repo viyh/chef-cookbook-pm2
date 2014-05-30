@@ -3,7 +3,7 @@
 # Resource:: app
 #
 
-actions :create, :delete
+actions :create, :delete, :restart
 
 attribute :name, :kind_of => String, :name_attribute => true
 attribute :cookbook, :kind_of => String, :default => 'pm2'

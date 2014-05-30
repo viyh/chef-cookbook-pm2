@@ -29,6 +29,7 @@ end
 
 action :create do
     t = template "#{new_resource.path}/server-start.sh" do
+        cookbook new_resource.cookbook
         owner new_resource.user
         group new_resource.group
         variables ({
@@ -65,4 +66,15 @@ action :delete do
     end
 
     execute "pm2 kill #{new_resource.name}"
+end
+
+action :restart do
+    server_start = execute "run #{new_resource.name}" do
+        command './server-start.sh'
+        cwd new_resource.path
+        user new_resource.user
+        group new_resource.group
+        only_if { ::File.exists?("#{new_resource.path}/server-start.sh") }
+        action :run
+    end
 end
